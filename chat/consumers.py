@@ -1,0 +1,80 @@
+import json
+from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
+
+from .models import Chat, Message
+
+
+class ChatConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.room_group_name = 'chat_%s' % self.room_name
+
+        # Join room group
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        # Leave room group
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+
+    async def receive(self, text_data):
+        message = json.loads(text_data)
+        sender = message['sender']
+        content = message['content']
+
+        # Send message to room group
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'chat_message',
+                'sender': sender,
+                'content': content
+            }
+        )
+
+        # Create and save the message to the database
+        chat = await self.get_chat_instance()
+        await self.save_message(content, sender, chat)
+
+    @database_sync_to_async
+    def get_chat_instance(self):
+        return Chat.objects.get(chat_name=self.room_name)
+
+    @database_sync_to_async
+    def save_message(self, content, sender, chat):
+        Message.objects.create(content=content, sender=self.scope['user'], chat=chat)
+
+    async def chat_message(self, event):
+        sender = event['sender']
+        content = event['content']
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({
+            'sender': sender,
+            'content': content
+        }))
+
+    # @database_sync_to_async
+    # def save_message(self, sender, room_name, content):
+    #     receiver_username = room_name.split('_')[1]
+    #     receiver = get_user_model().objects.get(username=receiver_username)
+    #     ChatMessage.objects.create(sender=sender, receiver=receiver, content=content, room_name=room_name)
+    #
+    # async def chat_message(self, event):
+    #     message = event['message']
+    #     sender_username = event['sender_username']
+    #
+    #     # Check if the message belongs to the current chat
+    #     if self.scope['user'].username == sender_username:
+    #         # Send message to WebSocket
+    #         await self.send(text_data=json.dumps({
+    #             'message': message
+    #         }))

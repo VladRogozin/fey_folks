@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <!-- Главный контейнер -->
+  <div class="container mt-5">
+
+    <!-- Заголовок -->
+    <h1 class="display-4 text-center">Добро пожаловать в Hi folks!!</h1>
+
+    <!-- Поле описания -->
+    <div class="row mt-4">
+      <div class="col-md-8 offset-md-2">
+        <p class="lead text-center">Hi folks! Наша цель - помочь вам найти друзей для интересного общения. Отправляйте анонимные сообщения 50 случайным людям, и если заинтересуются, начнется увлекательный диалог.</p>
+      </div>
+    </div>
+
+    <!-- Кнопка регистрации -->
+    <div class="row mt-4">
+      <div class="col-md-4 offset-md-4 text-center">
+        <a href="{% url 'users:register' %}" class="btn btn-primary btn-lg">Зарегистрироваться</a>
+      </div>
+    </div>
+
+  </div>
+<br>
+<h1>User List</h1>
+<ul>
+    {% for user in users %}
+        <li>
+            {{ user.username }} - {{ user.email }}
+            {% if user != request.user %}
+                <a href="{% url 'room' user.username %}">Go to Chat</a>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

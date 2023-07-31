@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container mt-4 mb-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1>Chat Room - {{ room_name }}</h1>
+                <div class="chat-box-container">
+                    <div id="chat-box" class="mt-3">
+                        {% for message in messages reversed %}
+                            <div class="alert {% if message.sender == request.user %}alert-primary{% else %}alert-secondary{% endif %}">
+                                <strong>{{ message.sender.username }}:</strong> {{ message.content }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="input-group mt-3">
+                    <input type="text" id="chat-message-input" class="form-control">
+                    <div class="input-group-append">
+                        <button type="button" id="send-button" class="btn btn-primary">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ room_name|json_script:"room-name" }}
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const chatMessageInput = document.getElementById('chat-message-input');
+        const sendButton = document.getElementById('send-button');
+        const roomName = "{{ room_name }}";
+        const currentUser = "{{ request.user.username }}";
+
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + roomName + '/');
+
+        socket.onmessage = function(event) {
+            const messageData = JSON.parse(event.data);
+            const messageClass = messageData.sender === currentUser ? 'alert-primary' : 'alert-secondary';
+            chatBox.innerHTML += `<div class="alert ${messageClass}"><strong>${messageData.sender}:</strong> ${messageData.content}</div>`;
+        };
+
+        sendButton.onclick = function() {
+            const messageContent = chatMessageInput.value;
+            const message = {
+                'sender': currentUser,
+                'content': messageContent
+            };
+            socket.send(JSON.stringify(message));
+            chatMessageInput.value = '';
+        };
+    </script>
+{% endblock %}
