@@ -1,6 +1,75 @@
-
 .chat-box-container {
         max-height: 400px;
         overflow-y: auto;
 }
 
+.chat-user {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    background-color: #e8f1ff; /* Light blue background color */
+    padding: 10px; /* Add some padding around the content */
+    border-radius: 5px; /* Rounded corners for the container */
+}
+
+.avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.user-info {
+    flex: 1;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.user-details {
+    color: #555;
+    font-size: 12px;
+}
+
+.user-email {
+    color: #888;
+}
+
+.status {
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.last-message {
+    font-size: 14px;
+    color: #555;
+}
+
+a {
+    text-decoration: none; /* Убираем подчеркивание текста ссылки */
+    color: inherit; /* Наследуем цвет текста ссылки от родительского элемента */
+    background-color: transparent; /* Убираем фон у ссылки */
+}
+
+/* Стили для ссылки при наведении */
+a:hover {
+    text-decoration: none; /* Убираем подчеркивание текста при наведении */
+    background-color: transparent; /* Убираем фон при наведении */
+}
+
+
+.chats-chat {
+    width: 100%;
+    display: flex;
+
+}
+
+.chats {
+    width: 30%;
+}
+
+.chat {
+    width: 70%;
+}

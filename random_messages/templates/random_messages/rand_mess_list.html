@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Received Messages:</h1>
+<ul>
+    {% for message in received_messages %}
+        <li>
+            {{ message.content }}
+            {% if message.sender != request.user %}
+                <a href="{% url 'chat:room' message.sender.username %}">Go to Chat with {{ message.sender.username }}</a>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

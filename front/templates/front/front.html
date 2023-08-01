@@ -2,37 +2,65 @@
 {% load static %}
 
 {% block content %}
-  <!-- Главный контейнер -->
-  <div class="container mt-5">
+<!-- Главный контейнер -->
+<div class="container mt-5">
 
     <!-- Заголовок -->
     <h1 class="display-4 text-center">Добро пожаловать в Hi folks!!</h1>
 
     <!-- Поле описания -->
     <div class="row mt-4">
-      <div class="col-md-8 offset-md-2">
-        <p class="lead text-center">Hi folks! Наша цель - помочь вам найти друзей для интересного общения. Отправляйте анонимные сообщения 50 случайным людям, и если заинтересуются, начнется увлекательный диалог.</p>
-      </div>
+        <div class="col-md-8 offset-md-2">
+            <p class="lead text-center">Hi folks! Наша цель - помочь вам найти друзей для интересного общения.
+                Отправляйте анонимные сообщения 50 случайным людям, и если заинтересуются, начнется увлекательный
+                диалог.</p>
+        </div>
     </div>
 
     <!-- Кнопка регистрации -->
     <div class="row mt-4">
-      <div class="col-md-4 offset-md-4 text-center">
-        <a href="{% url 'users:register' %}" class="btn btn-primary btn-lg">Зарегистрироваться</a>
-      </div>
+        <div class="col-md-4 offset-md-4 text-center">
+            <a href="{% url 'users:register' %}" class="btn btn-primary btn-lg">Зарегистрироваться</a>
+        </div>
     </div>
 
-  </div>
+</div>
 <br>
 <h1>User List</h1>
 <ul>
-    {% for user in users %}
-        <li>
-            {{ user.username }} - {{ user.email }}
-            {% if user != request.user %}
-                <a href="{% url 'room' user.username %}">Go to Chat</a>
+    {% for chat in chats %}
+    <li>
+        {% if chat.user1 == current_user %}
+            {{ chat.user2.username }}
+            <a href="{% url 'chat:give_permission' chat.id %}">Give Permission</a>
+            {% if chat.has_both_permissions %}
+                - {{ chat.user2.email }}
+                <a href="{% url 'chat:room' chat.user2.username %}">Go to Chat</a>
             {% endif %}
-        </li>
+        {% else %}
+            {{ chat.user1.username }}
+            <a href="{% url 'chat:give_permission' chat.id %}">Give Permission</a>
+            {% if chat.has_both_permissions %}
+                - {{ chat.user1.email }}
+                <a href="{% url 'chat:room' chat.user1.username %}">Go to Chat</a>
+            {% endif %}
+        {% endif %}
+    </li>
     {% endfor %}
 </ul>
+<ul>
+    {% for user in users %}
+    <li>
+        {{ user.username }} - {{ user.email }}
+        {% if user != request.user %}
+        <a href="{% url 'chat:room' user.username %}">Go to Chat</a>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+<form method="post" action="{% url 'random:random' %}">
+    {% csrf_token %}
+    <textarea name="content" placeholder="Type your message here"></textarea>
+    <button type="submit">Send Message</button>
+</form>
 {% endblock %}

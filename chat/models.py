@@ -12,7 +12,11 @@ class Chat(models.Model):
     chat_name = models.CharField(max_length=255)
     user1 = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='chat_user1')
     user2 = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='chat_user2')
+    permission_user1 = models.BooleanField(default=False)
+    permission_user2 = models.BooleanField(default=False)
 
+    def has_both_permissions(self):
+        return self.permission_user1 and self.permission_user2
 
 class Message(models.Model):
     content = models.TextField()

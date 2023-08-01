@@ -3,15 +3,15 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 
 from users.forms import CustomUserCreationForm
-import asyncio
-import json
-from channels.generic.websocket import AsyncWebsocketConsumer
+
 
 def register(request):
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST, request.FILES)  # Включите request.FILES для обработки данных файла
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])  # Вместо использования make_password
+            user.save()
             return redirect('users:login')
     else:
         form = CustomUserCreationForm()
@@ -27,7 +27,7 @@ def user_login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('front')  # Замените redirect('') на redirect('base')
+                return redirect('front:front')
     else:
         form = AuthenticationForm()
     return render(request, 'users/login.html', {'form': form})
