@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
+
+
+<div class="container mt-4">
+  <div class="row justify-content-center"> <!-- Изменено на justify-content-center для центрирования -->
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body text-center">
+          <div class="profile-avatar">
+            {% if user.avatar %}
+              <img src="{{ user.avatar.url }}" alt="Аватар" class="img-fluid rounded-circle" style="width: 250px; height: 250px;"> <!-- Изображение увеличено -->
+            {% else %}
+              <img src="{% static 'img/def.jpg' %}" alt="Аватар" class="img-fluid rounded-circle" style="width: 250px; height: 250px;"> <!-- Изображение увеличено -->
+            {% endif %}
+          </div>
+          <h1 class="profile-username">{{ user.username }}</h1>
+          <h4 class="profile-name">{{ user.first_name }} {{ user.last_name }}</h4>
+          <p class="profile-age">{{ user.age }} лет</p>
+          <p class="profile-city">Город: {{ user.city }}</p>
+          <p class="profile-info"> <!-- Дополнительная информация -->
+              {{ user.description }}
+            </p>
+          {% if user == request.user %}
+            <a href="{% url 'users:edit' %}" class="btn btn-primary">Редактировать аватар</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
+
+
+

@@ -1,0 +1,169 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.welcome-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.background-image {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    opacity: 0.9;
+}
+
+.background-image::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Затемнение черным цветом */
+}
+
+.background-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.text-overlay {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    color: white;
+    text-align: center;
+    width: 80%;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.text-overlay {
+    margin-top: 5%;
+    font-family: 'Pangolin', cursive;
+    background-color: rgba(255, 233, 118, 0.05); /* Прозрачный фон */
+    padding: 5%;
+    border-radius: 10px; /* Закругленные углы */
+}
+
+.logo-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10%;
+    flex-direction: column;
+}
+
+.logo-content h1 {
+    font-size: 2rem;
+    margin-right: 10px;
+    white-space: nowrap;
+    font-family: 'Pangolin', cursive;
+}
+
+.logo-content img {
+    margin-top: 20%;
+    width: 70%;
+    height: auto;
+}
+
+.login-form {
+    flex: 1;
+    padding-left: 20px;
+}
+
+.text-overlay h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.text-overlay p {
+    font-size: 2rem;
+    line-height: 1.6;
+}
+
+.login-form {
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(244, 246, 248, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.login-form.form-group {
+    margin-bottom: 15px;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.login-form input[type="text"]:focus,
+.login-form input[type="password"]:focus {
+    border-color: #1877f2;
+}
+
+.login-form input[type="text"]::placeholder,
+.login-form input[type="password"]::placeholder {
+    color: #202930;
+}
+
+.login-form button[type="submit"] {
+    background-color: #ffe976;
+    color: #202930;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.login-form button[type="submit"]:hover {
+    background-color: #ffd700;
+}
+
+@media (max-width: 768px) {
+    .text-overlay {
+        top: 50%;
+        padding: 10px;
+    }
+
+    .logo-content img {
+        margin-top: 10%;
+        width: 70%;
+    }
+
+    .login-form {
+        padding: 10px;
+    }
+
+    .login-form p {
+        font-size: 22px;
+    }
+
+    .content {
+        flex-direction: column;
+    }
+}

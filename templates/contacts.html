@@ -1,0 +1,84 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/chat_style.css' %}">
+
+
+        <ul id="chat-list">
+            {% for user in users_with_common_chats %}
+
+
+                {% endfor %}
+        </ul>
+
+
+<script>
+    const csrfToken = '{{ csrf_token }}';
+
+    // Функция для обновления списка пользователей
+    function updateUsersList() {
+        fetch('/chat/chats_list/', {
+            method: 'POST',  // Используем метод POST для получения данных
+            headers: {
+                'Content-Type': 'application/json',  // Устанавливаем заголовок Content-Type для JSON данных
+                'X-CSRFToken': '{{ csrf_token }}'  // Если используется CSRF защита, передайте CSRF токен
+            },
+            body: JSON.stringify({})  // Пустой объект, если не требуется передача данных
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Обработка успешного ответа от сервера
+
+            // Очищаем текущий список пользователей
+            $("#chat-list").empty();
+
+
+            data.users_with_common_chats.reverse().forEach(function(user) {
+                var listItem = $('<li class="chat-list-item"></li>');
+
+                var link = $('<a class="all-a" href="/chat/room/' + user.username + '"></a>');
+
+                var chatUser = $('<div class="chat-user"></div>');
+
+                var avatar = $('<img class="avatar" src="' + (user.avatar_url ? user.avatar_url : '{% static "img/def.jpg" %}') + '" alt="Avatar">');
+                chatUser.append(avatar);
+
+                var userInfo = $('<div class="user-info"></div>');
+                var username = $('<div class="username">' + user.username + '</div>');
+                userInfo.append(username);
+
+                if (user.last_message) {
+                    var lastMessage = $('<div class="last-message">' + (user.last_message.length > 20 ? user.last_message.substring(0, 20) + '...' : user.last_message) + '</div>'); // Ограничиваем сообщение до 20 символов
+                    userInfo.append(lastMessage);
+                }
+
+                chatUser.append(userInfo);
+
+                var profileButton = $('<div class="profile-button"></div>');
+                var profileLink = $('<a class="profile-link" data-user-id="' + user.id + '"></a>');
+                var profileImg = $('<img src="{% static "img/profile.png" %}" alt="Profile" class="profile-img">');
+
+                profileLink.append(profileImg);
+                profileButton.append(profileLink);
+                chatUser.append(profileButton);
+
+                link.append(chatUser);
+                listItem.append(link);
+
+                $("#chat-list").prepend(listItem);
+
+                // Обновляем ссылку на профиль пользователя в JavaScript
+                profileLink.attr('href', '/users/profile/' + profileLink.data('user-id'));
+            });
+
+        })
+        .catch(error => {
+            // Обработка ошибки
+            console.error("Error:", error);
+        });
+    }
+
+    // Вызываем функцию для обновления списка пользователей при загрузке страницы
+    updateUsersList();
+
+    // Выполняем обновление списка пользователей через определенный интервал времени (например, каждые 10 секунд)
+    setInterval(updateUsersList, 10000);
+</script>

@@ -2,54 +2,95 @@
 {% load static %}
 
 {% block content %}
-    <div class="container mt-4 mb-5">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <h1>Chat Room - {{ room_name }}</h1>
-                <div class="chat-box-container">
-                    <div id="chat-box" class="mt-3">
-                        {% for message in messages reversed %}
-                            <div class="alert {% if message.sender == request.user %}alert-primary{% else %}alert-secondary{% endif %}">
-                                <strong>{{ message.sender.username }}:</strong> {{ message.content }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="input-group mt-3">
-                    <input type="text" id="chat-message-input" class="form-control">
-                    <div class="input-group-append">
-                        <button type="button" id="send-button" class="btn btn-primary">Send</button>
-                    </div>
-                </div>
+<link rel="stylesheet" type="text/css" href="{% static 'css/room.css' %}">
+
+<div class="char-body">
+    <div class="name-holder">
+        <p>{{ room_name }}</p>
+        <button id="delete-chat-button" class="delete-chat-button">
+            <img src="{% static 'img/delete.png' %}" title="Видалити чат " style="width: 20%;">
+        </button>
+    </div>
+    <div class="chat-box-container">
+        <div id="chat-box" class="mt-3">
+            {% for message in messages reversed %}
+            <div class="message {% if message.sender == request.user %}self{% else %}other{% endif %}">
+                <strong>{{ message.sender.username }}:</strong> {{ message.content }}
             </div>
+            {% endfor %}
         </div>
     </div>
+            <div class="chat-input">
+                <input type="text" id="chat-message-input" placeholder="Type your message...">
+                <button type="button" id="send-button"><img src="{% static 'img/send.png' %}" alt="Logo" style="width: 100%;"></button>
+            </div>
 
-    {{ room_name|json_script:"room-name" }}
+</div>
+{{ room_name|json_script:"room-name" }}
 
-    <script>
-        const chatBox = document.getElementById('chat-box');
-        const chatMessageInput = document.getElementById('chat-message-input');
-        const sendButton = document.getElementById('send-button');
-        const roomName = "{{ room_name }}";
-        const currentUser = "{{ request.user.username }}";
+<div id="confirmation-modal" class="modal">
+    <div class="modal-content">
+        <p>Точно видаляється чат?</p>
+        <button id="confirm-delete" class="delete-button">Видалити</button>
+        <button id="cancel-delete" class="cancel-button">Скасування</button>
+    </div>
+</div>
 
-        const socket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + roomName + '/');
+<script>
+    const chatBox = document.getElementById('chat-box');
+    const chatMessageInput = document.getElementById('chat-message-input');
+    const sendButton = document.getElementById('send-button');
+    const roomName = "{{ room_name }}";
+    const currentUser = "{{ request.user.username }}";
 
-        socket.onmessage = function(event) {
-            const messageData = JSON.parse(event.data);
-            const messageClass = messageData.sender === currentUser ? 'alert-primary' : 'alert-secondary';
-            chatBox.innerHTML += `<div class="alert ${messageClass}"><strong>${messageData.sender}:</strong> ${messageData.content}</div>`;
+    const socket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + roomName + '/');
+
+    socket.onmessage = function(event) {
+        const messageData = JSON.parse(event.data);
+        const messageClass = messageData.sender === currentUser ? 'self' : 'other';
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', messageClass);
+        messageElement.innerHTML = `<strong>${messageData.sender}:</strong> ${messageData.content}`;
+        chatBox.appendChild(messageElement);
+    };
+
+    sendButton.onclick = function() {
+        const messageContent = chatMessageInput.value;
+        const message = {
+            'sender': currentUser,
+            'content': messageContent
         };
+        socket.send(JSON.stringify(message));
+        chatMessageInput.value = '';
+    };
 
-        sendButton.onclick = function() {
-            const messageContent = chatMessageInput.value;
-            const message = {
-                'sender': currentUser,
-                'content': messageContent
-            };
-            socket.send(JSON.stringify(message));
-            chatMessageInput.value = '';
-        };
-    </script>
+
+
+    const deleteChatButton = document.getElementById('delete-chat-button');
+    const confirmationModal = document.getElementById('confirmation-modal');
+    const confirmDeleteButton = document.getElementById('confirm-delete');
+    const cancelDeleteButton = document.getElementById('cancel-delete');
+
+    // Скрываем всплывающее окно при загрузке страницы
+    confirmationModal.style.display = 'none';
+
+    deleteChatButton.addEventListener('click', () => {
+        confirmationModal.style.display = 'flex'; // Изменим на flex для центрирования
+    });
+
+    confirmDeleteButton.addEventListener('click', () => {
+        fetch(`/chat/delete_chat/${roomName}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/';  // Замените на нужный путь перенаправления
+                }
+            });
+    });
+
+    cancelDeleteButton.addEventListener('click', () => {
+        confirmationModal.style.display = 'none';
+    });
+</script>
+
 {% endblock %}

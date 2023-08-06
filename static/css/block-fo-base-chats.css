@@ -1,0 +1,95 @@
+.chats-chat {
+    width: 100%;
+    display: flex;
+
+    box-sizing: border-box; /* Учитываем отступы в общей ширине блока */
+
+}
+
+
+
+
+.chats {
+    width: 25%; /* Займет 25% ширины всего экрана */
+    height: calc(100vh - 0px); /* Высота экрана минус высота кнопки */
+    overflow-y: auto;
+    position: sticky; /* Вернем sticky, чтобы блок приклеивался к верху, если содержимое выше */
+    top: 0;
+    background-color: #202930; /* Добавим фон для наглядности */
+}
+
+
+/* Улучшенные стили для чата (chat) блока */
+.chat {
+    width: 75%;
+    box-sizing: border-box; /* Учитываем отступы в общей ширине блока */
+}
+
+
+/* Стили для отдельной кнопки */
+.floating-button {
+  position: fixed;
+  bottom: 590px;
+  right: 20px;
+  background-color: #202930;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+  z-index: 9999; /* Установим высокое значение z-index */
+  display: block;
+}
+
+.floating-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background-color: #ffd700;
+  color: #202930;
+}
+
+/* Добавим стили для анимации перехода контейнера в мобильном режиме */
+@media (max-width: 768px) {
+  .chats {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+    background-color: #202930;
+    transition: left 0.3s ease-in-out;
+  }
+
+  .chats.open {
+    left: 0;
+    position: fixed;
+  }
+}
+
+@media (min-width: 769px) {
+  .floating-button {
+    display: none; /* Кнопка будет скрыта при ширине экрана 769px и больше (на больших экранах) */
+  }
+}
+
+/* Добавим стили для адаптивности кнопки */
+@media (max-width: 768px) {
+  .floating-button {
+    padding: 8px 16px; /* Уменьшим размер кнопки в мобильном режиме */
+    font-size: 14px; /* Уменьшим размер шрифта в мобильном режиме */
+  }
+}
+
+@media (max-width: 768px) {
+  .chat {
+    width: 100%;
+  }
+
+
+
+
+

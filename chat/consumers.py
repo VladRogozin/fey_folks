@@ -61,20 +61,3 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'sender': sender,
             'content': content
         }))
-
-    # @database_sync_to_async
-    # def save_message(self, sender, room_name, content):
-    #     receiver_username = room_name.split('_')[1]
-    #     receiver = get_user_model().objects.get(username=receiver_username)
-    #     ChatMessage.objects.create(sender=sender, receiver=receiver, content=content, room_name=room_name)
-    #
-    # async def chat_message(self, event):
-    #     message = event['message']
-    #     sender_username = event['sender_username']
-    #
-    #     # Check if the message belongs to the current chat
-    #     if self.scope['user'].username == sender_username:
-    #         # Send message to WebSocket
-    #         await self.send(text_data=json.dumps({
-    #             'message': message
-    #         }))

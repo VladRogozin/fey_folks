@@ -9,11 +9,6 @@ from .models import Chat, Message
 
 
 @login_required
-def index(request):
-    users = get_user_model().objects.exclude(pk=request.user.pk)  # Исключаем текущего пользователя из списка
-    return render(request, "chat/index.html", {"users": users})
-
-@login_required
 def room(request, username):
     user1 = request.user
     user2 = get_object_or_404(get_user_model(), username=username)
@@ -39,9 +34,19 @@ def room(request, username):
         return redirect('some_other_page')  # или отобразите сообщение об ошибке
 
     # Получаем последние сообщения из чата
-    messages = Message.objects.filter(chat=chat).order_by('-timestamp')[:10]# Здесь ограничиваем 10 последними сообщениями
+    messages = Message.objects.filter(chat=chat).order_by('-timestamp')# Здесь ограничиваем 10 последними сообщениями
 
     return render(request, "chat/room.html", {"room_name": chat.chat_name, "messages": messages})
+
+
+@login_required
+def delete_chat(request, room_name):
+    chat = get_object_or_404(Chat, chat_name=room_name)
+    if chat and (chat.user1 == request.user or chat.user2 == request.user):
+        chat.delete()
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False})
 
 
 @login_required
@@ -63,12 +68,40 @@ def get_users_with_common_chats(request):
     # Используем множество (set) для удаления дубликатов пользователей
     users_with_common_chats = set(users_in_chats)
 
-    # Добавляем информацию о последних сообщениях к каждому пользователю
-    for user in users_with_common_chats:
-        last_message = Message.objects.filter(chat__user1=user, chat__user2=request.user).order_by('-timestamp').first()
-        user.last_message = last_message
+    # Преобразуем данные в JSON
+    users_data = []
+    users_without_messages = []
 
-    return render(request, 'chat/chats.html', {'users_with_common_chats': users_with_common_chats})
+    for chat in common_chats:
+        other_user = chat.user1 if chat.user1 != user else chat.user2
+        last_message = chat.last_message
+        if last_message:
+            user_data = {
+                'id': other_user.id,
+                'username': other_user.username,
+                'avatar_url': other_user.avatar.url if other_user.avatar else None,
+                'last_message': last_message.content,
+                'last_message_timestamp': last_message.timestamp,
+            }
+            users_data.append(user_data)
+        else:
+            users_without_messages.append(other_user)
+
+    users_data = sorted(users_data, key=lambda x: x['last_message_timestamp'], reverse=True)
+
+    # Добавляем пользователей без сообщений в конец списка
+    for user in users_without_messages:
+        user_data = {
+            'id': user.id,
+            'username': user.username,
+            'avatar_url': user.avatar.url if user.avatar else None,
+            'last_message': None,
+            'last_message_timestamp': None,
+        }
+        users_data.append(user_data)
+
+    return JsonResponse({'users_with_common_chats': users_data})
+
 
 
 @login_required

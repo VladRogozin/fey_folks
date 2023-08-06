@@ -1,0 +1,43 @@
+
+/* Стилизация полоски скролла */
+::-webkit-scrollbar {
+    width: 5px;
+
+}
+
+::-webkit-scrollbar-track {
+    background: #202930;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #ffe976, #ffe976);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #ffd700, #ffd700);
+}
+
+.navbar-icon-my {
+    width: 100%;
+}
+
+.nav-butt {
+    font-size: 0.75rem; /* Измените это значение на своё усмотрение */
+    /* Другие стили по вашему выбору */
+}
+
+
+@media (max-width: 380px) {
+    .navbar-toggler {
+        position: absolute;
+        right: 15px; /* Установите значение, которое соответствует вашим потребностям */
+    }
+}
+
+
+@media (min-width: 900px) {
+    .navbar {
+        max-height: 40px; /* Например, установите высоту в 60 пикселей */
+    }
+}

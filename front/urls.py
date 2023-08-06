@@ -5,4 +5,5 @@ app_name = 'front'
 
 urlpatterns = [
     path('', views.front_view, name='front'),
+    path('hello', views.unauthorized, name='hello'),
 ]

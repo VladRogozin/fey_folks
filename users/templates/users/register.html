@@ -1,44 +1,63 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block content %}
-    <div class="registration-form" >
-        <h2>Регистрация</h2>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="{{ form.username.id_for_label }}">Логин (должен быть уникальный и не давать другим понять что это вы):</label>
-                {{ form.username }}
-            </div>
-            <div class="form-group">
-                <label for="{{ form.first_name.id_for_label }}">Имя:</label>
-                {{ form.first_name }}
-            </div>
-            <div class="form-group">
-                <label for="{{ form.last_name.id_for_label }}">Фамилия:</label>
-                {{ form.last_name }}
-            </div>
-            <div class="form-group">
-                <label for="{{ form.avatar.id_for_label }}">Фото (аватар):</label>
-                {{ form.avatar }}
-            </div>
-            <div class="form-group">
-                <label for="{{ form.age.id_for_label }}">Возраст:</label>
-                {{ form.age }}
-            </div>
-            <div class="form-group">
-                <label for="{{ form.city.id_for_label }}">Город:</label>
-                {{ form.city }}
-            </div>
-            <div class="form-group">
-                <label for="{{ form.email.id_for_label }}">Email:</label>
-                {{ form.email }}
-            </div>
-            <div class="form-group">
-                <label for="{{ form.password.id_for_label }}">Пароль:</label>
-                {{ form.password }}
-            </div>
-            <button type="submit">Зарегистрироваться</button>
-        </form>
+{% block front_content %}
+<!--    link fo css-->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<!--    link fo css-->
+
+
+
+<div class="welcome-container">
+    <div class="background-image">
+        <img src="{% static 'img/hello_photo.jpg' %}">
     </div>
+    <div class="registration-form">
+            <h2>Регистрация</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">Логин (должен быть уникальный и не давать другим понять что это вы):</label>
+                    {{ form.username }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">Имя:</label>
+                    {{ form.first_name }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}">Фамилия:</label>
+                    {{ form.last_name }}
+                </div>
+                <div class="form-group">
+                    <label for="avatar">Фото (аватар):</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="avatar" name="avatar">
+                        <label class="custom-file-label" for="avatar">
+                            <i class="fas fa-upload"> </i> Тут обрати
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.age.id_for_label }}">Возраст:</label>
+                    {{ form.age }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.city.id_for_label }}">Город:</label>
+                    {{ form.city }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">Email:</label>
+                    {{ form.email }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.password.id_for_label }}">Пароль:</label>
+                    {{ form.password }}
+                </div>
+                <button type="submit">Зарегистрироваться</button>
+
+            </form>
+
+    </div>
+</div>
 {% endblock %}

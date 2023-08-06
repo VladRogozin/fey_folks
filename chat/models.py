@@ -3,9 +3,6 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 
-class Profile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    subscribed_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='subscribers', blank=True)
 
 
 class Chat(models.Model):
@@ -17,6 +14,15 @@ class Chat(models.Model):
 
     def has_both_permissions(self):
         return self.permission_user1 and self.permission_user2
+
+    @property
+    def last_message(self):
+        return self.message_set.order_by('-timestamp').first()
+
+    @property
+    def last_message_timestamp(self):
+        last_message = self.last_message
+        return last_message.timestamp if last_message else None
 
 class Message(models.Model):
     content = models.TextField()

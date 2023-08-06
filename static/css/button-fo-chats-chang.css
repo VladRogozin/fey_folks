@@ -1,0 +1,28 @@
+.button-fo-chats-chang {
+  background-color: #ffe976;
+  color: #202930;
+  border: 2px solid #202930; /* Добавляем рамку */
+  padding: 5px 8px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease-in-out;
+
+  /* Размещаем кнопку по центру блока */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Добавляем отступы в 20 пикселей справа и 10 пикселей вниз */
+  margin: 3% 20%; /* Вместо margin: 20px; */
+}
+
+.button-fo-chats-chang:hover {
+  border: 2px solid #202930; /* Добавляем рамку */
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background-color: #ffd700;
+}
+
+
+

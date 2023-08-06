@@ -1,35 +1,153 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.welcome-container {
+    position: relative;
+    width: 100%;
+    height: 120vh;
+    overflow: hidden;
+}
+
+.background-image {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    opacity: 0.9;
+}
+
+.background-image::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Затемнение черным цветом */
+}
+
+.background-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+/* Добавляем стили для адаптивности и центрирования */
 .registration-form {
     max-width: 400px;
     margin: 0 auto;
+    padding: 20px; /* Добавим отступы для красоты */
 }
 
-.form-group {
-    margin-bottom: 15px;
+
+.registration-form {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    color: white;
+    text-align: center;
+    width: 80%;
 }
 
-.form-group label {
-    display: block;
-    font-weight: bold;
-}
 
+
+/* Общие стили для всех полей ввода */
 .form-group input[type="text"],
 .form-group input[type="email"],
-.form-group input[type="password"] {
+.form-group input[type="password"],
+.custom-file-input,
+.form-group select { /* Включим стили также для выпадающего списка, если используется */
     width: 100%;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    outline: none; /* Убираем контур вокруг элементов при фокусе */
 }
 
-button {
-    padding: 10px 20px;
-    background-color: #007BFF;
+/* Добавляем светло-желтую подсветку для полей ввода при фокусе */
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus,
+.custom-file-input:focus,
+.form-group select:focus {
+    background-color: #fff9cc;
+}
+
+.custom-file {
+    position: relative;
+    display: inline-block;
+}
+
+.custom-file-label {
+    display: inline-block;
+    padding: 8px 10px;
+    background-color: #ffd700;
     color: #fff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-file-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.custom-file-label .btn-icon {
+    margin-right: 5px;
+}
+
+.custom-file-label::after {
+    content: ' ';
+    background-color: #ffd700;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #ffe976;
+    color: #202930;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #ffd700;
+}
+
+@media (max-width: 768px) {
+    .registration-form {
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        color: white;
+        text-align: center;
+        width: 80%;
+    }
+
+    .background-image img {
+        width: 200%;
+        height: 200%;
+        object-fit: cover;
+    }
+
+    .welcome-container {
+        position: relative;
+        width: 100%;
+        height: 150vh;
+        overflow: hidden;
+    }
 }

@@ -6,46 +6,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Pangolin&display=swap">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/chat_style.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-JcS1l50rJKgJ5y8F0l/+Uv5vD1zjEAd2mDnnmC3OBEPi2lFsXNDZUk1Gv1A1HcLdaB+zkOR1fIe6UzTbtVtuA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/button-fo-chats-chang.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/block-fo-base-chats.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/body.css' %}">
+
     <title>Title</title>
+
 </head>
 <body>
-  <!-- Навигационная панель -->
-  <nav class="navbar navbar-expand-md bg-dark navbar-dark">
-    <div class="container"> <!-- Обертка для центрирования -->
-      <a class="navbar-brand" href="{% url 'front:front' %}">Hi folks!</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'users:register' %}">Register</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'users:login' %}">Login</a>
-          </li>
-          {% if user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'users:logout' %}">Logout</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'random:list' %}">My messages</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'chat:chats_list' %}">My messages</a>
-            </li>
 
-          {% endif %}
-          <!-- Добавьте здесь дополнительные пункты меню, если необходимо -->
-        </ul>
-      </div>
-    </div>
-  </nav>
+        {% include 'navbar.html' %}
 
-{% block content %}{% endblock %}
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<div class="content-container-once">
+    {% if user.is_authenticated %}
+        <div class="chats-chat">
+            <div class="chats">
+                <button class="button-fo-chats-chang" id="toggleContentButton" onclick="toggleContent()">Повідомлення</button>
+                <div id="contacts" style="display: block;">
+                    {% include 'contacts.html' %}
+                </div>
+                <div id="randomMessages" style="display: none;">
+                    {% include 'random_messages/rand_mess_list.html' %}
+                </div>
+            </div>
+            <div class="chat">
+                {% block content %}{% endblock %}
+                <br>
+            </div>
+            <button class="floating-button" id="floatingButton" onclick="toggleChats()">
+                <img src="{% static 'img/chats_button.png' %}" alt="Logo" style="width: 90%;">
+            </button>
+        </div>
+    {% else %}
+        <div class="front-container">
+            {% block front_content %}{% endblock %}
+        </div>
+    {% endif %}
+</div>
+    <!-- Отдельная кнопка для управления адаптивным режимом контейнера -->
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/fo_chats_chat.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 

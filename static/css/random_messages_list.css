@@ -1,0 +1,48 @@
+.message-input-container {
+  max-width: 600px;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+/* Стили для заголовка */
+.message-input-container h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+/* Стили для списка сообщений */
+#messagesList {
+  list-style: none;
+  padding: 0;
+}
+
+/* Стили для каждого сообщения */
+.message-content {
+  background-color: #f9f9f9;
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.button-to-go-room {
+  background-color: #ffe976;
+  color: #202930;
+  border: 2px solid #202930;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 3% 5%;
+}
+
+.button-to-go-room:hover {
+  border: 2px solid #202930;
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background-color: #ffd700;
+}

@@ -1,31 +1,55 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block content %}
-    <div class="container">
-        <div class="row justify-content-center mt-5">
-            <div class="col-md-6">
-                <h2 class="text-center mb-4">Вход в систему</h2>
-                <form method="post" class="needs-validation" novalidate>
-                    {% csrf_token %}
-                    <!-- Добавляем классы формы Bootstrap для красивого оформления -->
-                    {% for field in form %}
-                        <div class="form-group">
-                            {{ field.label_tag }}
-                            {{ field }}
-                            <!-- Выводим ошибки валидации, если есть -->
-                            {% if field.errors %}
-                                <div class="invalid-feedback">
-                                    {% for error in field.errors %}
-                                        {{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                    <button type="submit" class="btn btn-primary btn-block">Войти</button>
-                </form>
+{% block front_content %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Pangolin&display=swap">
+<link rel="stylesheet" type="text/css" href="{% static 'css/unauthorized.css' %}">
+
+
+     <div class="welcome-container">
+        <div class="background-image">
+            <img src="{% static 'img/hello_photo.jpg' %}">
+        </div>
+        <div class="text-overlay">
+            <div class="content">
+                <div class="logo-content">
+                        <img src="{% static 'img/hey_folks.png' %}" >
+                        <p>Знаходь тих, хто підходить.</p>
+                </div>
+                <div class="login-form">
+                    <p>Ласкаво просимо</p>
+                    <form method="post" class="login-form needs-validation" novalidate>
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="form-group">
+                                {{ field }}
+                                {% if field.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in field.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        <button type="submit">Войти</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    const inputFields = document.querySelectorAll(".login-form input[type='text'], .login-form input[type='password']");
+    inputFields.forEach(function(input) {
+        const label = input.previousElementSibling;
+        if (label) {
+            input.placeholder = label.textContent.trim();
+            label.style.display = "none";
+        }
+    });
+});
+
+</script>
 {% endblock %}

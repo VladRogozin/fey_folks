@@ -1,75 +1,105 @@
-.chat-box-container {
-        max-height: 400px;
-        overflow-y: auto;
+/* Общие стили */
+all-a {
+    text-decoration: none;
+    color: inherit;
+    background-color: transparent;
 }
 
-.chat-user {
+.all-a:hover {
+    text-decoration: none; /* Убираем подчеркивание при наведении */
+    background-color: transparent; /* Оставляем фон без изменений */
+}
+
+/* Стили для элементов списка чатов */
+.chat-user,
+.chat-user.selected {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
-    background-color: #e8f1ff; /* Light blue background color */
-    padding: 10px; /* Add some padding around the content */
-    border-radius: 5px; /* Rounded corners for the container */
+    padding: 3px;
+    border-radius: 5px;
+    background-color: #202930;
+    text-align: left;
+    transition: background-color 0.3s ease;
 }
 
+.chat-user:hover,
+.chat-user.selected:hover {
+    background-color: rgba(160, 160, 160, 0.4); /* Цвет фона становится полупрозрачным желтым при наведении */
+}
+
+/* Стили для аватара */
 .avatar {
     width: 60px;
     height: 60px;
     border-radius: 50%;
     object-fit: cover;
     margin-right: 10px;
+    margin-left: 0; /* Убираем отступ слева */
 }
 
+/* Стили для информации о пользователе */
 .user-info {
     flex: 1;
 }
 
+/* Стили для имени пользователя */
 .username {
     font-weight: bold;
+    color: #fff9d8;
 }
 
-.user-details {
-    color: #555;
-    font-size: 12px;
+/* Стили для последнего сообщения */
+.last-message {
+    font-size: 14px;
+    color: #d1dae0;
 }
 
-.user-email {
-    color: #888;
+/* Обнуляем стили списка */
+ul, ol {
+    list-style-type: none;
+    padding: 0;
 }
 
-.status {
-    font-size: 12px;
+/* Стили для алерта */
+.alert-primary {
+    background-color: #ffe976;
+    color: #000;
+}
+
+#chat-list {
+    padding: 0 10px;
+}
+
+.profile-img {
+    width: 80%;
+}
+
+.user-status {
+    display: flex;
+    align-items: center;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
     margin-left: 5px;
 }
 
-.last-message {
-    font-size: 14px;
-    color: #555;
+.dot-online {
+    background-color: yellow;
 }
 
-a {
-    text-decoration: none; /* Убираем подчеркивание текста ссылки */
-    color: inherit; /* Наследуем цвет текста ссылки от родительского элемента */
-    background-color: transparent; /* Убираем фон у ссылки */
-}
-
-/* Стили для ссылки при наведении */
-a:hover {
-    text-decoration: none; /* Убираем подчеркивание текста при наведении */
-    background-color: transparent; /* Убираем фон при наведении */
+.dot-offline {
+    background-color: gray;
 }
 
 
-.chats-chat {
-    width: 100%;
-    display: flex;
 
-}
-
-.chats {
-    width: 30%;
-}
-
-.chat {
-    width: 70%;
+@media (max-width: 768px) {
+  .avatar {
+        width: 45px;
+        height: 45px;
+  }
 }

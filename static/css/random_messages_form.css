@@ -1,0 +1,66 @@
+.container-random-messages-form {
+    max-width: 500px;
+    margin: 10% auto;
+    padding: 10px;
+    background-color: #202930;
+    border-radius: 8px;
+}
+
+.messages-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.random-input-container{
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.random-textarea-form {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #fff;
+    resize: none;
+    font-size: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.random-form-label {
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    pointer-events: none;
+    color: #777;
+    font-size: 16px;
+    transition: 0.2s ease all;
+    font-weight: 700;
+}
+
+.random-textarea-form:focus + label,
+.random-textarea-form:not(:placeholder-shown) + label {
+    top: -70%;
+    left: 10px;
+    font-size: 40px;
+    color: #ffd700;
+}
+
+.random-form-button {
+    padding: 10px 30px;
+    font-size: 16px;
+    background-color: #ffe976;
+    color: #141100;
+    border: none;
+    border-radius: 50px; /* Задает округлые углы */
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease; /* Добавляет плавное изменение цвета при наведении */
+}
+
+.random-form-button:hover {
+    background-color: #ffd700;
+}
+
+
+

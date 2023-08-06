@@ -1,16 +1,70 @@
-{% extends 'base.html' %}
+
 {% load static %}
 
-{% block content %}
-<h1>Received Messages:</h1>
-<ul>
-    {% for message in received_messages %}
-        <li>
-            {{ message.content }}
-            {% if message.sender != request.user %}
-                <a href="{% url 'chat:room' message.sender.username %}">Go to Chat with {{ message.sender.username }}</a>
-            {% endif %}
-        </li>
-    {% endfor %}
-</ul>
-{% endblock %}
+<!-- Подключаем стили -->
+<link rel="stylesheet" type="text/css" href="{% static 'css/random_messages_list.css' %}">
+
+<!-- HTML разметка для сообщений -->
+<div class="message-input-container">
+    <ul id="messagesList">
+        <!-- Список сообщений будет заполняться JavaScript -->
+    </ul>
+</div>
+
+<script>
+function truncateText(text, maxLength) {
+    if (text.length > maxLength) {
+        return text.slice(0, maxLength) + '...';
+    }
+    return text;
+}
+
+fetch('/random/list/')
+.then(response => response.json())
+.then(data => {
+    // Обрабатываем полученные данные и отображаем сообщения
+    const messagesList = document.getElementById('messagesList');
+    data.received_messages.forEach(message => {
+        const listItem = document.createElement('li');
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+
+        const messageText = document.createElement('p');
+        messageText.textContent = truncateText(message.content, 30); // Ограничиваем до 30 слов
+        messageContent.appendChild(messageText);
+
+        const expandButton = document.createElement('button');
+        expandButton.textContent = 'Повний текст';
+        expandButton.className = 'button-to-go-room';
+
+        expandButton.addEventListener('click', () => {
+            if (expandButton.textContent === 'Повний текст') {
+                messageText.textContent = message.content; // Полный текст
+                expandButton.textContent = 'Звернути';
+            } else {
+                messageText.textContent = truncateText(message.content, 30); // Ограниченный текст
+                expandButton.textContent = 'Повний текст';
+            }
+        });
+
+        if (message.sender !== "{{ request.user.username }}") {
+            const chatButton = document.createElement('button');
+            chatButton.textContent = `Почати спілкування з  ${message.sender}`;
+            chatButton.className = 'button-to-go-room';
+            chatButton.addEventListener('click', () => {
+                window.location.href = `/chat/room/${message.sender}/`;
+            });
+            messageContent.appendChild(chatButton);
+        }
+
+        messageContent.appendChild(expandButton);
+        listItem.appendChild(messageContent);
+        messagesList.appendChild(listItem);
+    });
+})
+.catch(error => {
+    console.error('Error fetching messages:', error);
+});
+</script>
+
+

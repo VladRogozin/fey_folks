@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!--    link fo css-->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/random_messages_form.css' %}">
+<!--    link fo css-->
+
+<div class="container-random-messages-form">
+    <form method="post" action="{% url 'random:random' %}" class="messages-form">
+        {% csrf_token %}
+        <div class="random-input-container">
+            <textarea class="random-textarea-form" name="content" placeholder="  " rows="4"></textarea>
+            <label class="random-form-label">Hey Folks!</label>
+        </div>
+        <button class="random-form-button" type="submit">Надіслати</button>
+    </form>
+</div>
+
+{% endblock %}
