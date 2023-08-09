@@ -17,4 +17,20 @@
     </form>
 </div>
 
+    <div class="tips">
+        {% for tip in random_tips %}
+            <div class="tip-card">
+                <h2>{{ tip.chat_name }}</h2>
+                <p>{{ tip.text }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $(".tip-card").addClass("show");
+    });
+</script>
 {% endblock %}

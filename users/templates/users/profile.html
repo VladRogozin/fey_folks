@@ -3,26 +3,30 @@
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
 
+<link rel="stylesheet" type="text/css" href="{% static 'css/post_list.css' %}">
 
-<div class="container mt-4">
-  <div class="row justify-content-center"> <!-- Изменено на justify-content-center для центрирования -->
+<div class="container mt-4 mb-5">
+  <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="card">
-        <div class="card-body text-center">
+        <div class="card-body text-center"  id="container-profile-css">
           <div class="profile-avatar">
             {% if user.avatar %}
-              <img src="{{ user.avatar.url }}" alt="Аватар" class="img-fluid rounded-circle" style="width: 250px; height: 250px;"> <!-- Изображение увеличено -->
+              <img src="{{ user.avatar.url }}" alt="Аватар" class="img-fluid rounded-circle" style="width: 250px; height: 250px;">
             {% else %}
-              <img src="{% static 'img/def.jpg' %}" alt="Аватар" class="img-fluid rounded-circle" style="width: 250px; height: 250px;"> <!-- Изображение увеличено -->
+              <img src="{% static 'img/def.jpg' %}" alt="Аватар" class="img-fluid rounded-circle" style="width: 250px; height: 250px;">
             {% endif %}
           </div>
           <h1 class="profile-username">{{ user.username }}</h1>
-          <h4 class="profile-name">{{ user.first_name }} {{ user.last_name }}</h4>
-          <p class="profile-age">{{ user.age }} лет</p>
-          <p class="profile-city">Город: {{ user.city }}</p>
-          <p class="profile-info"> <!-- Дополнительная информация -->
-              {{ user.description }}
-            </p>
+
+
+          {% if is_own_profile or chat.has_both_permissions %}
+            <h4 class="profile-name">{{ user.first_name }} {{ user.last_name }}</h4>
+            <p class="profile-age">{{ user.age }} лет</p>
+            <p class="profile-city">Город: {{ user.city }}</p>
+            <p class="profile-info">{{ user.description }}</p>
+          {% endif %}
+
           {% if user == request.user %}
             <a href="{% url 'users:edit' %}" class="btn btn-primary">Редактировать аватар</a>
           {% endif %}
@@ -32,6 +36,108 @@
   </div>
 </div>
 
+
+<div class="post-block">
+  <ul class="post-list">
+    {% for post in posts %}
+      <li class="post-item" data-post-id="{{ post.pk }}">
+        <h2 class="post-title">{{ post.title }}</h2>
+        <p class="post-description">
+          {% if post.description|length > 100 %}
+            <span class="short-description">{{ post.description|safe|slice:":100" }}</span>
+            <span class="full-description" style="display: none;">{{ post.description }}</span>
+            <button class="read-more-button">
+              <img class="my-icon-navbar mr-2" src="{% static 'img/more_info_post.svg' %}" title="Створити пост" alt="post" >
+            </button>
+          {% else %}
+            {{ post.description }}
+          {% endif %}
+        </p>
+        {% if post.photo %}
+           <div class="post-img-line">
+             <img class="post-image" src="{{ post.photo.url }}" alt="{{ post.title }}">
+          </div>
+        {% endif %}
+        <p class="post-date">{{ post.created_at }}</p>
+        <button class="delete-button">Удалить</button>
+        <a class="edit-link" href="{% url 'random:post-update' post.pk %}">Редактировать</a>
+      </li>
+      <hr class="wave-line">
+    <hr class="wave-line">
+    {% endfor %}
+  </ul>
+</div>
+
+<div id="fullscreen-overlay" style="display: none;">
+  <div id="fullscreen-image-container">
+    <img id="fullscreen-image">
+    <span id="close-button" class="close-icon">&#10005;</span>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const readMoreButtons = document.querySelectorAll(".read-more-button");
+
+  readMoreButtons.forEach(button => {
+    button.addEventListener("click", function() {
+      const shortDescription = this.parentNode.querySelector(".short-description");
+      const fullDescription = this.parentNode.querySelector(".full-description");
+
+      shortDescription.style.display = "none";
+      fullDescription.style.display = "inline";
+      this.style.display = "none";
+    });
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+  const postImages = document.querySelectorAll(".post-image");
+  const fullscreenOverlay = document.getElementById("fullscreen-overlay");
+  const fullscreenImage = document.getElementById("fullscreen-image");
+  const closeIcon = document.getElementById("close-button");
+
+  postImages.forEach(image => {
+    image.addEventListener("click", function() {
+      const imageURL = this.getAttribute("src");
+      fullscreenImage.setAttribute("src", imageURL);
+      fullscreenOverlay.style.display = "flex";
+    });
+  });
+
+  closeIcon.addEventListener("click", function() {
+    fullscreenOverlay.style.display = "none";
+  });
+});
+document.addEventListener("DOMContentLoaded", function() {
+  const deleteButtons = document.querySelectorAll(".delete-button");
+
+  deleteButtons.forEach(button => {
+    button.addEventListener("click", async function() {
+      const postItem = this.closest(".post-item");
+      const postId = postItem.getAttribute("data-post-id");
+
+      try {
+        const response = await fetch(`/random/post/delete/${postId}/`, {
+          method: "DELETE",
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": "{{ csrf_token }}"
+          }
+        });
+
+        if (response.ok) {
+          postItem.remove();
+        } else {
+          console.error("Failed to delete post");
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    });
+  });
+});
+</script>
 
 {% endblock %}
 

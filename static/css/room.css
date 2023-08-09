@@ -1,5 +1,5 @@
-.char-body {
-    background-color: #ffffe9;
+.chat-box {
+    background-color: black;
 }
 
 
@@ -28,27 +28,69 @@
     width: 100%; /* Установите нужную ширину, например, 80% или другое значение */
     margin-right: auto;
     margin-left: auto;
+    font-family: 'Pangolin', cursive;
+    font-size: 16px;
+}
+
+.message-container-in-chat {
+    display: flex; /* Добавляем flex-контейнер */
+    align-items: end; /* Выравнивание элементов по вертикали */
+    margin: 1% 20% 0 0;
+}
+
+.avatar-other {
+    width: 33px;
+    height: 33px;
+    border-radius: 50%;
+    margin-right: 1px;
+
+
+}
+
+.avatar-self {
+    width: 33px;
+    height: 33px;
+    border-radius: 50%;
+    margin-right: 1px;
+
+}
+
+.imgs {
+    height: 100%;
+
 }
 
 .message {
-    margin: 10px 0;
-    padding: 10px;
     border-radius: 5px;
     width: fit-content;
     word-break: break-all;
+    margin: 0 3px;
+    padding: 1% 1%;
+
+}
+
+.message-in-web-sox {
+    white-space: pre-line;
+    border-radius: 5px;
+    width: fit-content;
+    word-break: break-all;
+    margin: 0 3px;
+    padding: 1% 1%;
 }
 
 .self {
-    background-color: #ffe976;
     color: #202930;
+    background-color: rgba(255, 233, 118, 0.8);
     align-self: flex-end;
 }
 
 .other {
-    background-color: #d5e8f8;
     color: #202930;
+    background-color: rgba(213, 232, 248, 0.8);
     align-self: flex-start;
 }
+
+
 
 /* Добавьте стили для полосы прокрутки */
 .chat-box-container::-webkit-scrollbar {
@@ -90,16 +132,19 @@
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
 
-#chat-message-input {
-    background-color: #ffffe9;
+.chat-message-input {
+    background-color: #202930;
+    color: #d1dae0;
     flex: 1;
     border: none;
-    padding: 8px;
-    border-radius: 20px;
+    padding: 0 2%;
     outline: none;
-    font-size: 14px;
+    font-size: 18px;
     margin-right: 10px;
+    resize: none; /* Убедитесь, что textarea не может изменять размер */
+    overflow: hidden;
 }
+
 
 #send-button {
     background-color: #202930;
@@ -113,7 +158,7 @@
 
 
 .delete-chat-button {
-    width: 120px;
+    width: 50px;
     position: absolute;
     top: 50%;
     right: 2%; /* Отступ справа */
@@ -123,11 +168,39 @@
     padding: 0;
 }
 
+.chose-fon-button {
+    width: 50px;
+    position: absolute;
+    top: 50%;
+    right: 18%; /* Отступ справа */
+    transform: translateY(-50%); /* Выравнивание по вертикали */
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.toggle-permission-button {
+    width: 50px;
+    position: absolute;
+    top: 50%;
+    right: 10%; /* Отступ справа */
+    transform: translateY(-50%); /* Выравнивание по вертикали */
+    background: none;
+    border: none;
+    padding: 0;
+}
+}
 
 
 #send-button:hover {
       background-color: #ffd700;
         color: #202930;
+}
+
+.name-in-name-holder {
+    font-size: 18px;
+    font-weight: bold;
+    font-family: 'REM', sans-serif;
 }
 
 
@@ -148,7 +221,7 @@
     .modal-content {
         background-color: #202930;
         border-radius: 5px;
-        padding: 20px;
+        padding: 10px;
         box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
         width: 30%; /* Ширина окна */
         align-items: center; /* Выравнивание по горизонтали */
@@ -197,14 +270,78 @@
 }
 
 
+.custom-file-upload {
+    background-color: #ffe976;
+    color: #202930;
+    padding: 5px 7px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+}
+
+.custom-file-upload:hover {
+    background-color: #ffd700;
+}
+
+#upload-background-button {
+    background-color: #ffd700;
+    color: #202930;
+    border: none;
+    padding: 5px 7px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#upload-background-button:hover {
+    background-color: #c4a500;
+}
+
+.close-button {
+    color: #ffd700;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.delete-message-button {
+    background: none;
+    border: none;
+    padding-left: 0;
+    position: relative;
+}
+
+.delete-icon {
+    width: 16px;
+    color: black;
+    position: absolute;
+    top: 0;
+    right: 0;
+        left: 100%;
+    opacity: 0; /* Изначально невидимая иконка */
+}
+
+.message-container-in-chat:hover .delete-icon {
+    opacity: 1; /* Показываем иконку при наведении на блок */
+}
 
 
     /* Адаптивность для мобильных устройств */
-    @media (max-width: 600px) {
+@media (max-width: 600px) {
         .modal-content {
             width: 90%; /* Уменьшаем ширину на маленьких экранах */
         }
-    }
+}
 
 
 @media (max-width: 769px) {
@@ -222,6 +359,8 @@
     }
 
     .delete-chat-button{
-        width: 70px;
+        width: 50px;
     }
 }
+
+

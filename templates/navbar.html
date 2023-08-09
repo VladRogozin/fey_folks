@@ -18,12 +18,17 @@
                 {% if user.is_authenticated %}
                     <li class="nav-item mx-3">
                         <a class="nav-link" href="{% url 'random:form' %}" style="font-size: 18px;">
-                            <img src="{% static 'img/messages_to_woeld.png' %}" title="Написати світові" alt="Logo" class="mr-2 navbar-icon-my">
+                            <img src="{% static 'img/messages_to_world.svg' %}" title="Написати світові" alt="Logo" class="mr-2 navbar-icon-my">
                         </a>
                     </li>
                     <li class="nav-item mx-3">
                         <a class="nav-link" href="{% url 'users:profile' request.user.id %}">
-                            <img class="my-icon-navbar mr-2" src="{% static 'img/profile.png' %}" title="Мій профіль" alt="Profile">
+                            <img class="my-icon-navbar mr-2" src="{% static 'img/profile.svg' %}" title="Мій профіль" alt="Profile" >
+                        </a>
+                    </li>
+                    <li class="nav-item mx-3">
+                        <a class="nav-link" href="{% url 'random:create-random-post' %}">
+                            <img class="my-icon-navbar mr-2" src="{% static 'img/post_create.svg' %}" title="Створити пост" alt="post" >
                         </a>
                     </li>
                 {% endif %}

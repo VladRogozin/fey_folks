@@ -4,30 +4,63 @@
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/room.css' %}">
 
-<div class="char-body">
+<div class="chat-body">
+        </div>
     <div class="name-holder">
-        <p>{{ room_name }}</p>
+        <p class="name-in-name-holder">
+            {% if user != chat.user1 %}
+            {{ chat.user1 }}
+            {% else %}
+            {{ chat.user2 }}
+            {% endif %}
+        </p>
+        <button id="toggle-permission-button" class="toggle-permission-button">
+            {% if user == chat.user1 and chat.permission_user1 %}
+            <img src="{% static 'img/profile_close.svg' %}" title="Відкрити доступ до вашого профілю " style="width: 40%;">
+            {% elif user == chat.user2 and chat.permission_user2 %}
+            <img src="{% static 'img/profile_close.svg' %}" title="Відкрити доступ до вашого профілю " style="width: 40%;">
+            {% else %}
+            <img src="{% static 'img/profile_open.svg' %}" title="Закрити доступ до вашого профілю " style="width: 40%;">
+            {% endif %}
+        </button>
+        <button id="change-background-button" class="chose-fon-button">
+            <img src="{% static 'img/chose_fon.svg' %}" title="вибрати зображення для фону чату" style="width: 40%;">
+        </button>
         <button id="delete-chat-button" class="delete-chat-button">
-            <img src="{% static 'img/delete.png' %}" title="Видалити чат " style="width: 20%;">
+            <img src="{% static 'img/delete.svg' %}" title="Видалити чат " style="width: 40%;">
         </button>
     </div>
     <div class="chat-box-container">
         <div id="chat-box" class="mt-3">
             {% for message in messages reversed %}
-            <div class="message {% if message.sender == request.user %}self{% else %}other{% endif %}">
-                <strong>{{ message.sender.username }}:</strong> {{ message.content }}
-            </div>
+                <div class="message-container-in-chat">
+                    <div class="imgs">
+                        <img class="{% if message.sender == request.user %}avatar-self{% else %}avatar-other{% endif %}" src="{{ message.sender.avatar.url }}" alt="{{ message.sender.username }} Avatar">
+                    </div>
+                    <div class="message {% if message.sender == request.user %}self{% else %}other{% endif %}">
+                        {{ message.content|linebreaksbr }}
+                    </div>
+                    <div>
+                        {% if message.sender == request.user %}
+                            <button class="delete-message-button" data-message-id="{{ message.id }}">
+                                <img src="{% static 'img/delete.svg' %}" title="Видалити чат" class="delete-icon">
+                            </button>
+                        {% endif %}
+                    </div>
+
+                </div>
             {% endfor %}
         </div>
     </div>
-            <div class="chat-input">
-                <input type="text" id="chat-message-input" placeholder="Type your message...">
-                <button type="button" id="send-button"><img src="{% static 'img/send.png' %}" alt="Logo" style="width: 100%;"></button>
-            </div>
+    <div class="chat-input">
+        <textarea id="chat-message-input" class="chat-message-input" placeholder="Ваше повідомлення..."
+                  rows="1"></textarea>
+        <button type="button" id="send-button"><img src="{% static 'img/send.png' %}" alt="Logo" style="width: 100%;">
+        </button>
+    </div>
 
 </div>
 {{ room_name|json_script:"room-name" }}
-
 <div id="confirmation-modal" class="modal">
     <div class="modal-content">
         <p>Точно видаляється чат?</p>
@@ -36,6 +69,25 @@
     </div>
 </div>
 
+<div id="delete-messages-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <p>Точно видаляється повідомлення?</p>
+        <button id="confirm-delete-messages" class="delete-button">Видалити</button>
+        <button id="cancel-delete-messages" class="cancel-button">Скасування</button>
+    </div>
+</div>
+
+
+<div id="background-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-button" id="close-background-modal">&#215;</span>
+        <label for="background-image-input" class="custom-file-upload">
+            <span>Вибрати зображення</span>
+        </label>
+        <input type="file" id="background-image-input" accept="image/*" style="display: none;">
+        <button id="upload-background-button" class="cancel-button">Загрузить</button>
+    </div>
+</div>
 <script>
     const chatBox = document.getElementById('chat-box');
     const chatMessageInput = document.getElementById('chat-message-input');
@@ -48,11 +100,92 @@
     socket.onmessage = function(event) {
         const messageData = JSON.parse(event.data);
         const messageClass = messageData.sender === currentUser ? 'self' : 'other';
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message', messageClass);
-        messageElement.innerHTML = `<strong>${messageData.sender}:</strong> ${messageData.content}`;
-        chatBox.appendChild(messageElement);
+
+        const messageContainer = document.createElement('div');
+        messageContainer.classList.add('message-container-in-chat');
+
+        const avatarDiv = document.createElement('div');
+        avatarDiv.classList.add('imgs');
+
+        const avatarImg = document.createElement('img');
+        avatarImg.classList.add(messageData.sender === currentUser ? 'avatar-self' : 'avatar-other');
+        avatarImg.src = messageData.avatar;
+        avatarImg.alt = `${messageData.sender} Avatar`;
+
+        avatarDiv.appendChild(avatarImg);
+
+        const contentDiv = document.createElement('div');
+        contentDiv.classList.add('message-in-web-sox');
+        contentDiv.classList.add(messageClass);
+        contentDiv.innerHTML = `${messageData.content}`;
+
+        messageContainer.appendChild(avatarDiv);
+        messageContainer.appendChild(contentDiv);
+
+        chatBox.appendChild(messageContainer);
     };
+
+
+    const deleteButtons = document.querySelectorAll('.delete-message-button');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const messageId = button.getAttribute('data-message-id');
+            confirmDelete(messageId);
+        });
+    });
+
+    function confirmDelete(messageId) {
+        const modal = document.getElementById('delete-messages-modal');
+        const confirmButton = document.getElementById('confirm-delete-messages');
+        const cancelButton = document.getElementById('cancel-delete-messages');
+
+        modal.style.display = 'block';
+
+        confirmButton.addEventListener('click', () => {
+            deleteMessage(messageId);
+            modal.style.display = 'none';
+        });
+
+        cancelButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+
+    function deleteMessage(messageId) {
+        // Отправьте запрос на сервер для удаления сообщения
+        fetch(`/chat/delete_message/${messageId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}', // Замените на действительный CSRF-токен
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Удалите сообщение из интерфейса чата
+                const messageContainer = document.querySelector(`[data-message-id="${messageId}"]`);
+                messageContainer.remove();
+            } else {
+                console.error(data.error);
+            }
+        });
+    }
+
+
+
+    chatMessageInput.addEventListener('keydown', event => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendButton.click();
+            chatMessageInput.style.height = '1em'; // Возвращаем высоту в 1 строку после отправки
+        }
+    });
+
+    chatMessageInput.addEventListener('input', () => {
+        chatMessageInput.style.height = 'auto'; // Сбрасываем высоту перед определением высоты контента
+        chatMessageInput.style.height = (chatMessageInput.scrollHeight + 2) + 'px'; // Автоматическое изменение высоты
+    });
 
     sendButton.onclick = function() {
         const messageContent = chatMessageInput.value;
@@ -91,6 +224,61 @@
     cancelDeleteButton.addEventListener('click', () => {
         confirmationModal.style.display = 'none';
     });
+
+
+    // change permission
+    const togglePermissionButton = document.getElementById('toggle-permission-button');
+
+    togglePermissionButton.addEventListener('click', () => {
+        fetch(`/chat/toggle_permission/${roomName}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    togglePermissionButton.innerHTML = data.newPermission ?
+                        '<img src="/static/img/profile_close.svg" title="Видалити чат " style="width: 40%;">' :
+                        '<img src="/static/img/profile_open.svg" title="Видалити чат " style="width: 40%;">';
+                }
+            });
+    });
+
+    const changeBackgroundButton = document.getElementById('change-background-button');
+    const backgroundModal = document.getElementById('background-modal');
+    const closeButton = document.getElementById('close-background-modal'); // Добавляем элемент кнопки закрытия
+    const backgroundImageInput = document.getElementById('background-image-input');
+    const uploadBackgroundButton = document.getElementById('upload-background-button');
+
+    backgroundModal.style.display = 'none';
+
+    changeBackgroundButton.addEventListener('click', () => {
+        backgroundModal.style.display = 'flex';
+    });
+
+    closeButton.addEventListener('click', () => { // Добавляем обработчик для кнопки закрытия
+        backgroundModal.style.display = 'none';
+    });
+
+    uploadBackgroundButton.addEventListener('click', () => {
+        const formData = new FormData();
+        formData.append('background_image', backgroundImageInput.files[0]);
+
+        fetch(`/chat/upload_background/${roomName}/`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}', // Замените на действительный CSRF-токен
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Обновите фон чата или выполните другие действия
+            } else {
+                console.error(data.error);
+            }
+            backgroundModal.style.display = 'none';
+        });
+    });
+
 </script>
 
 {% endblock %}

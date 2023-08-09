@@ -1,0 +1,67 @@
+.post-form {
+  max-width: 70%;
+  margin: 5% auto; /* Центрирование формы по горизонтали */
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #202930;
+  color: #fff9d8;
+
+}
+
+.post-form h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.post-form label {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.post-form input[type="text"],
+.post-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border-radius: 3px;
+}
+
+.post-form button.submit-button {
+  background-color: #ffe976;
+  color: #202930;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  margin: 6% 0 0 1%;
+}
+
+.post-form button.submit-button:hover {
+  background-color: #f2c93d;
+}
+
+
+.file-input {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  background-color: #fff9d8;
+  color: #202930;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s; /* Плавный переход */
+}
+
+.file-input:hover {
+  background-color: #ffda0c; /* Новый цвет при наведении */
+}
+
+.file-input input[type="file"] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  cursor: pointer;
+}

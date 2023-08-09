@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Pangolin&display=swap">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-JcS1l50rJKgJ5y8F0l/+Uv5vD1zjEAd2mDnnmC3OBEPi2lFsXNDZUk1Gv1A1HcLdaB+zkOR1fIe6UzTbtVtuA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <link rel="stylesheet" type="text/css" href="{% static 'css/button-fo-chats-chang.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/block-fo-base-chats.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/body.css' %}">
@@ -30,10 +31,16 @@
                     {% include 'random_messages/rand_mess_list.html' %}
                 </div>
             </div>
-            <div class="chat">
-                {% block content %}{% endblock %}
+                {% if user == chat.user1 and chat.background_image_1 %}
+                    <div class="chat" style="background-image: url('{{ chat.background_image_1.url }}'); background-size: cover;">
+                {% elif user == chat.user2 and chat.background_image_2 %}
+                    <div class="chat" style="background-image: url('{{ chat.background_image_2.url }}'); background-size: cover;">
+                {% else %}
+                        <div class="chat" style="background-image: linear-gradient(rgba(32, 41, 48, 0.5), rgba(255, 227, 79, 0.5)), url('{% static 'img/random_photo/9.jpg' %}');">
+                {% endif %}
+                    {% block content %}{% endblock %}
                 <br>
-            </div>
+                </div>
             <button class="floating-button" id="floatingButton" onclick="toggleChats()">
                 <img src="{% static 'img/chats_button.png' %}" alt="Logo" style="width: 90%;">
             </button>

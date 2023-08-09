@@ -1,9 +1,10 @@
 .container-random-messages-form {
-    max-width: 500px;
-    margin: 10% auto;
+    max-width: 70%;
+    margin: 14%  auto 0 auto;
     padding: 10px;
     background-color: #202930;
     border-radius: 8px;
+    font-family: 'Pangolin', cursive;
 }
 
 .messages-form {
@@ -21,10 +22,10 @@
     padding: 10px;
     border: none;
     border-radius: 4px;
-    background-color: #fff;
+    background-image: linear-gradient(rgba(32, 41, 48, 0.5), rgba(255, 227, 79, 0.5));
     resize: none;
-    font-size: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 25px;
+    letter-spacing: 2px; /* Увеличение интервала между буквами */
 }
 
 .random-form-label {
@@ -34,20 +35,21 @@
     pointer-events: none;
     color: #777;
     font-size: 16px;
-    transition: 0.2s ease all;
+    transition: 1s ease all;
     font-weight: 700;
 }
 
 .random-textarea-form:focus + label,
 .random-textarea-form:not(:placeholder-shown) + label {
     top: -70%;
-    left: 10px;
-    font-size: 40px;
+    left: 50px;
+    font-size: 70px;
     color: #ffd700;
+
 }
 
 .random-form-button {
-    padding: 10px 30px;
+    padding: 2% 3%;
     font-size: 16px;
     background-color: #ffe976;
     color: #141100;
@@ -62,5 +64,56 @@
     background-color: #ffd700;
 }
 
+@media (max-width: 768px) {
+  .random-textarea-form:focus + label,
+    .random-textarea-form:not(:placeholder-shown) + label {
+        top: -43%;
+        left: 10px;
+        font-size: 50px;
+        color: #ffd700;
 
+    }
+}
 
+.tips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.tip-card {
+    width: calc(50% - 10px);
+    background-color: rgba(32, 41, 48, 0.8);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 5% auto 0 auto;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.tip-card p {
+    color: #ffe976;
+    font-size: 20px;
+}
+
+.tip-card h2 {
+    color: #ffe976;
+    font-size: 30px;
+}
+
+.tip-card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Медиа-запрос для уменьшения размера текста в адаптивном режиме */
+@media (max-width: 768px) {
+    .tip-card p {
+        font-size: 16px;
+    }
+
+    .tip-card h2 {
+        font-size: 24px;
+    }
+}

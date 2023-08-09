@@ -1,0 +1,149 @@
+.chat {
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Закрепить фоновое изображение */
+}
+
+.wave-line {
+margin: 4px;
+  width: 75%;
+  height: 1px;
+  background-color: rgba(244, 244, 244, 1);
+  background-image: linear-gradient(rgba(32, 41, 48, 0.1), rgba(255, 227, 79, 0.2));
+}
+
+
+
+.post-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Выравнивание по центру по горизонтали */
+  justify-content: center; /* Выравнивание по центру по вертикали */
+}
+
+.post-item {
+  font-family: 'Open Sans', sans-serif;
+  margin: 0.5%;
+  padding: 10px 3%;
+  background-color: rgba(244, 244, 244, 1);
+  background-image: linear-gradient(rgba(32, 41, 48, 0.1), rgba(255, 227, 79, 0.2));
+  border-radius: 2px;
+  width: 75%;
+
+}
+
+.post-title {
+  font-size: 24px;
+  margin-bottom: 3px;
+  letter-spacing: 1.2px;
+}
+
+.post-description {
+  font-size: 16px;
+  margin-bottom: 3px;
+  letter-spacing: 1.4px;
+}
+
+.post-img-line {
+    margin: 4% 0;
+  text-align: center; /* Выравнивание содержимого по центру горизонтально */
+}
+
+.post-image {
+  max-width: 550px;
+  max-height: 400px; /* Максимальная высота изображения */
+  height: auto;
+  display: inline-block; /* Делаем изображение блочно-инлайновым, чтобы можно было центрировать */
+}
+
+.post-date {
+  font-size: 12px;
+  color: #999;
+}
+
+.read-more-button {
+  width: 1%;
+  height: 10%;
+  background-color: transparent;
+  color: black;
+  border: none;
+  cursor: pointer;
+  font-size: 1px;
+}
+
+.delete-button {
+  background-color: #fff9c4; /* Пастельно-желтый цвет для фона */
+  color: #666; /* Цвет текста */
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #ff5252; /* Цвет при наведении */
+}
+
+/* Для ссылки "Редактировать" */
+.edit-link {
+  color: #666; /* Цвет текста */
+  text-decoration: none;
+}
+
+.edit-link:hover {
+  color: #ec9406; /* Цвет при наведении */
+}
+
+
+@media (max-width: 768px) {
+    .post-image {
+      max-width: 200px;
+      max-height: 200px;
+    }
+}
+
+
+
+#fullscreen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+#fullscreen-image-container {
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto; /* Добавляет прокрутку, если содержимое контейнера больше его размеров */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#fullscreen-image {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+}
+
+.close-icon {
+  font-size: 24px;
+  color: yellow; /* желтый цвет */
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}

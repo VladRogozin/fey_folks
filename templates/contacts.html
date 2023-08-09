@@ -1,17 +1,22 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/chat_style.css' %}">
-
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Pangolin&display=swap">
 
         <ul id="chat-list">
             {% for user in users_with_common_chats %}
 
 
                 {% endfor %}
-        </ul>
 
+        </ul>
+<div id="no-chats-placeholder" class="no-chats-placeholder">
+
+</div>
 
 <script>
     const csrfToken = '{{ csrf_token }}';
+
+
 
     // Функция для обновления списка пользователей
     function updateUsersList() {
@@ -69,12 +74,27 @@
                 profileLink.attr('href', '/users/profile/' + profileLink.data('user-id'));
             });
 
+                 if (data.users_with_common_chats.length <= 0) {
+                    const noChatsPlaceholder = $("#no-chats-placeholder");
+                    noChatsPlaceholder.empty(); // Очищаем содержимое блока
+
+                    // Добавляем изображение и текст
+                    const image = $('<a class="no-chats-img" href="/random/messages/"><img  src="{% static "img/no_chats.gif" %}" alt="No Chats"></a>');
+                    const text = $('<p class="no-chats-text">Тисни на пікачу та заводь знайомства!</p>');
+                    noChatsPlaceholder.append(image);
+                    noChatsPlaceholder.append(text);
+                } else {
+                    // Если есть чаты, можно оставить блок пустым или добавить другой контент
+                    $("#no-chats-placeholder").empty();
+                }
         })
+
         .catch(error => {
             // Обработка ошибки
             console.error("Error:", error);
         });
     }
+
 
     // Вызываем функцию для обновления списка пользователей при загрузке страницы
     updateUsersList();

@@ -41,3 +41,11 @@
         max-height: 40px; /* Например, установите высоту в 60 пикселей */
     }
 }
+
+
+
+.chat {
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+}

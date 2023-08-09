@@ -51,9 +51,12 @@ all-a {
 
 /* Стили для последнего сообщения */
 .last-message {
-    font-size: 14px;
+    letter-spacing: 2px;
+    font-size: 16px;
     color: #d1dae0;
+    font-family: 'Pangolin', cursive;
 }
+
 
 /* Обнуляем стили списка */
 ul, ol {
@@ -95,6 +98,30 @@ ul, ol {
     background-color: gray;
 }
 
+.no-chats-placeholder {
+    margin: 30% 5%;
+    border-radius: 20px;
+    background-color: rgba(160, 160, 160, 0.4);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center; /* Выравнивание текста по центру */
+}
+
+.no-chats-img {
+    margin-top: 25%;
+    width: 140%; /* Ограничиваем ширину изображения */
+    margin: 5%;
+}
+
+.no-chats-text {
+    padding: 4% 20%;
+    font-weight: bold;
+    color: #fff6c4;
+    font-size: 14px;
+    margin-top: 10px; /* Отступ сверху для текста */
+}
 
 
 @media (max-width: 768px) {

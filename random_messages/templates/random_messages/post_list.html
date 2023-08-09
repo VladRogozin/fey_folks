@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/post_list.css' %}">
+
+<div class="post-block">
+  <ul class="post-list">
+    {% for post in posts %}
+
+      <li class="post-item" data-post-id="{{ post.pk }}">
+        <hr style="border: 50px solid black; height: 50px;">
+        <h2 class="post-title">{{ post.title }}</h2>
+        <p class="post-description">{{ post.description }}</p>
+        {% if post.photo %}
+          <img class="post-image" src="{{ post.photo.url }}" alt="{{ post.title }}">
+        {% endif %}
+        <p class="post-date">{{ post.created_at }}</p>
+        <button class="delete-button">Удалить</button>
+        <a href="{% url 'random:post-update' post.pk %}">Редактировать</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const deleteButtons = document.querySelectorAll(".delete-button");
+
+  deleteButtons.forEach(button => {
+    button.addEventListener("click", async function() {
+      const postItem = this.closest(".post-item");
+      const postId = postItem.getAttribute("data-post-id");
+
+      try {
+        const response = await fetch(`/random/post/delete/${postId}/`, {
+          method: "DELETE",
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": "{{ csrf_token }}"
+          }
+        });
+
+        if (response.ok) {
+          postItem.remove();
+        } else {
+          console.error("Failed to delete post");
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    });
+  });
+});
+</script>
+
+{% endblock %}

@@ -1,4 +1,5 @@
 .message-input-container {
+
   max-width: 600px;
   padding: 20px;
   border-radius: 5px;
@@ -18,14 +19,32 @@
 
 /* Стили для каждого сообщения */
 .message-content {
-  background-color: #f9f9f9;
-  padding: 10px 20px;
-  border: 1px solid #ddd;
+      letter-spacing: 2px;
+    font-size: 18px;
+    color: #d1dae0;
+  padding: 10px 30px;
   border-radius: 5px;
   margin-bottom: 20px;
+  transition: background-color 0.4s, transform 0.4s; /* Добавляем анимацию */
+}
+.message-content p {
+    font-family: 'Pangolin', cursive;
+}
+
+.message-content:hover {
+  background-color: rgba(160, 160, 160, 0.4);
+  transform: scale(1.05); /* Увеличиваем блок на 5% */
+}
+
+
+.buttons-container {
+    display: flex;
+    justify-content: space-between;
 }
 
 .button-to-go-room {
+  font-weight: bold;
+  height: 45px;
   background-color: #ffe976;
   color: #202930;
   border: 2px solid #202930;
@@ -37,12 +56,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 3% 5%;
+  margin: 3% 1.5%;
 }
 
 .button-to-go-room:hover {
   border: 2px solid #202930;
   transform: scale(1.1);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   background-color: #ffd700;
 }

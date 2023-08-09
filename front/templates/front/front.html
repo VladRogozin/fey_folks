@@ -1,126 +1,80 @@
 {% extends 'base.html' %}
+
 {% load static %}
 
 {% block content %}
-<!-- Главный контейнер -->
-<div class="container mt-5">
+<link rel="stylesheet" type="text/css" href="{% static 'css/post_list.css' %}">
 
-    <!-- Заголовок -->
-    <h1 class="display-4 text-center">Добро пожаловать в Hi folks!!</h1>
-
-    <!-- Поле описания -->
-    <div class="row mt-4">
-        <div class="col-md-8 offset-md-2">
-            <p class="lead text-center">Hi folks! Наша цель - помочь вам найти друзей для интересного общения.
-                Отправляйте анонимные сообщения 50 случайным людям, и если заинтересуются, начнется увлекательный
-                диалог.</p>
-        </div>
-    </div>
-
-    <!-- Кнопка регистрации -->
-    <div class="row mt-4">
-        <div class="col-md-4 offset-md-4 text-center">
-            <a href="{% url 'users:register' %}" class="btn btn-primary btn-lg">Зарегистрироваться</a>
-        </div>
-    </div>
-
+<div class="post-block">
+  <ul class="post-list">
+    {% for post in posts reversed %}
+      <li class="post-item" data-post-id="{{ post.pk }}">
+        <h2 class="post-title">{{ post.title }}</h2>
+        <p class="post-description">
+          {% if post.description|length > 100 %}
+            <span class="short-description">{{ post.description|safe|slice:":100" }}</span>
+            <span class="full-description" style="display: none;">{{ post.description }}</span>
+            <button class="read-more-button">
+              <img class="my-icon-navbar mr-2" src="{% static 'img/more_info_post.svg' %}" title="Створити пост" alt="post" >
+            </button>
+          {% else %}
+            {{ post.description }}
+          {% endif %}
+        </p>
+        {% if post.photo %}
+           <div class="post-img-line">
+             <img class="post-image" src="{{ post.photo.url }}" alt="{{ post.title }}">
+          </div>
+        {% endif %}
+        <p class="post-date">{{ post.created_at }}</p>
+      </li>
+      <hr class="wave-line">
+    <hr class="wave-line">
+    {% endfor %}
+  </ul>
 </div>
-<br>
-<h1>User List</h1>
-<ul>
-    {% for chat in chats %}
-    <li>
-        {% if chat.user1 == current_user %}
-            {{ chat.user2.username }}
-            <a href="{% url 'chat:give_permission' chat.id %}">Give Permission</a>
-            {% if chat.has_both_permissions %}
-                - {{ chat.user2.email }}
-                <a href="{% url 'chat:room' chat.user2.username %}">Go to Chat</a>
-            {% endif %}
-        {% else %}
-            {{ chat.user1.username }}
-            <a href="{% url 'chat:give_permission' chat.id %}">Give Permission</a>
-            {% if chat.has_both_permissions %}
-                - {{ chat.user1.email }}
-                <a href="{% url 'chat:room' chat.user1.username %}">Go to Chat</a>
-            {% endif %}
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul>
-<ul>
-    {% for user in users %}
-    <li>
-        {{ user.username }} - {{ user.email }}
-        {% if user != request.user %}
-        <a href="{% url 'chat:room' user.username %}">Go to Chat</a>
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul>
-<form method="post" action="{% url 'random:random' %}">
-    {% csrf_token %}
-    <textarea name="content" placeholder="Type your message here"></textarea>
-    <button type="submit">Send Message</button>
-</form>
+
+<div id="fullscreen-overlay" style="display: none;">
+  <div id="fullscreen-image-container">
+    <img id="fullscreen-image">
+    <span id="close-button" class="close-icon">&#10005;</span>
+  </div>
+</div>
 
 <script>
-    const csrfToken = '{{ csrf_token }}';
+document.addEventListener("DOMContentLoaded", function() {
+  const readMoreButtons = document.querySelectorAll(".read-more-button");
 
-    // Функция для обновления списка пользователей
-    function updateUsersList() {
-        fetch('/chat/chats_list/', {
-            method: 'POST',  // Используем метод POST для получения данных
-            headers: {
-                'Content-Type': 'application/json',  // Устанавливаем заголовок Content-Type для JSON данных
-                'X-CSRFToken': '{{ csrf_token }}'  // Если используется CSRF защита, передайте CSRF токен
-            },
-            body: JSON.stringify({})  // Пустой объект, если не требуется передача данных
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Обработка успешного ответа от сервера
+  readMoreButtons.forEach(button => {
+    button.addEventListener("click", function() {
+      const shortDescription = this.parentNode.querySelector(".short-description");
+      const fullDescription = this.parentNode.querySelector(".full-description");
 
-            // Очищаем текущий список пользователей
-            $("#chat-list").empty();
+      shortDescription.style.display = "none";
+      fullDescription.style.display = "inline";
+      this.style.display = "none";
+    });
+  });
+});
 
-            // Добавляем новые данные в список
-            data.users_with_common_chats.forEach(function(user) {
-                var listItem = '<li>' +
-                    '<a href="/chat/room/' + user.username + '">' +
-                    '<div class="chat-user">' +
-                    '<img class="avatar" src="' + (user.avatar_url ? user.avatar_url : '/static/img/def.jpg') + '" alt="Avatar">' +
-                    '<div class="user-info">' +
-                    '<div class="username">' + user.username + '</div>';
+document.addEventListener("DOMContentLoaded", function() {
+  const postImages = document.querySelectorAll(".post-image");
+  const fullscreenOverlay = document.getElementById("fullscreen-overlay");
+  const fullscreenImage = document.getElementById("fullscreen-image");
+  const closeIcon = document.getElementById("close-button");
 
-                if (user.has_both_permissions) {
-                    listItem += '<div class="username">' + user.first_name + ' ' + user.last_name + '</div>';
-                }
+  postImages.forEach(image => {
+    image.addEventListener("click", function() {
+      const imageURL = this.getAttribute("src");
+      fullscreenImage.setAttribute("src", imageURL);
+      fullscreenOverlay.style.display = "flex";
+    });
+  });
 
-                if (user.last_message) {
-                    listItem += '<div class="last-message">' + user.last_message + '</div>';
-                }
-
-                listItem += '</div>' +
-                    '</div>' +
-                    '</a>' +
-                    '</li>';
-
-                $("#chat-list").append(listItem);
-            });
-        })
-        .catch(error => {
-            // Обработка ошибки
-            console.error("Error:", error);
-        });
-    }
-
-    // Вызываем функцию для обновления списка пользователей при загрузке страницы
-    updateUsersList();
-
-    // Выполняем обновление списка пользователей через определенный интервал времени (например, каждые 10 секунд)
-    setInterval(updateUsersList, 10000);
+  closeIcon.addEventListener("click", function() {
+    fullscreenOverlay.style.display = "none";
+  });
+});
 </script>
-
 
 {% endblock %}

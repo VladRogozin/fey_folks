@@ -30,8 +30,11 @@ fetch('/random/list/')
         messageContent.className = 'message-content';
 
         const messageText = document.createElement('p');
-        messageText.textContent = truncateText(message.content, 30); // Ограничиваем до 30 слов
+        messageText.textContent = truncateText(message.content, 100); // Ограничиваем до 30 слов
         messageContent.appendChild(messageText);
+
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.className = 'buttons-container'; // Создаем обертку для кнопок
 
         const expandButton = document.createElement('button');
         expandButton.textContent = 'Повний текст';
@@ -42,22 +45,49 @@ fetch('/random/list/')
                 messageText.textContent = message.content; // Полный текст
                 expandButton.textContent = 'Звернути';
             } else {
-                messageText.textContent = truncateText(message.content, 30); // Ограниченный текст
+                messageText.textContent = truncateText(message.content, 100); // Ограниченный текст
                 expandButton.textContent = 'Повний текст';
             }
         });
 
-        if (message.sender !== "{{ request.user.username }}") {
-            const chatButton = document.createElement('button');
-            chatButton.textContent = `Почати спілкування з  ${message.sender}`;
-            chatButton.className = 'button-to-go-room';
-            chatButton.addEventListener('click', () => {
-                window.location.href = `/chat/room/${message.sender}/`;
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Удалити';
+        deleteButton.className = 'button-to-go-room';
+        console.log(message.id)
+        deleteButton.addEventListener('click', () => {
+            // Отправляем запрос на удаление сообщения
+            fetch(`/random/delete_message/${message.id}/`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Удаляем блок сообщения из списка
+                    listItem.remove();
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting message:', error);
             });
-            messageContent.appendChild(chatButton);
-        }
+        });
 
-        messageContent.appendChild(expandButton);
+        const chatButton = document.createElement('button');
+        chatButton.textContent = `Спілкуватись!`;
+        chatButton.className = 'button-to-go-room';
+        chatButton.addEventListener('click', () => {
+            window.location.href = `/chat/room/${message.sender}/`;
+        });
+
+        // Добавляем все кнопки в контейнер
+        buttonsContainer.appendChild(deleteButton);
+        buttonsContainer.appendChild(chatButton);
+        buttonsContainer.appendChild(expandButton);
+
+        messageContent.appendChild(buttonsContainer); // Добавляем контейнер с кнопками в контент сообщения
         listItem.appendChild(messageContent);
         messagesList.appendChild(listItem);
     });

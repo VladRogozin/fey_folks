@@ -36,7 +36,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'chat_message',
                 'sender': sender,
-                'content': content
+                'content': content,
+                'avatar': self.scope['user'].avatar.url  # Передача URL аватара
             }
         )
 
@@ -55,9 +56,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         sender = event['sender']
         content = event['content']
+        avatar = event['avatar']  # Получение URL аватара из события
 
-        # Send message to WebSocket
         await self.send(text_data=json.dumps({
             'sender': sender,
-            'content': content
+            'content': content,
+            'avatar': avatar  # Передача URL аватара в событии
         }))

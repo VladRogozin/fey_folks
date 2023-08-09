@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/post_form.css' %}">
+
+  <div class="post-form">
+    <h1>{% if form.instance.pk %}Редагування{% else %}Створення{% endif %} поста</h1>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <label for="{{ form.title.id_for_label }}">Заголовок:</label>
+      {{ form.title }}
+      <br>
+
+      <label for="{{ form.description.id_for_label }}">Опис:</label>
+      {{ form.description }}
+      <br>
+
+      <label for="{{ form.photo.id_for_label }}"></label>
+      <div class="file-input">
+        <span>Завантажити зображення</span>
+        {{ form.photo }}
+      </div>
+      <br>
+
+      <button type="submit" class="submit-button">{% if form.instance.pk %}Зберегти{% else %}Створити{% endif %}</button>
+    </form>
+  </div>
+{% endblock %}

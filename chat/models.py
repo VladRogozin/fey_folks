@@ -11,6 +11,8 @@ class Chat(models.Model):
     user2 = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='chat_user2')
     permission_user1 = models.BooleanField(default=False)
     permission_user2 = models.BooleanField(default=False)
+    background_image_1 = models.ImageField(upload_to='chat_backgrounds/', blank=True, null=True)
+    background_image_2 = models.ImageField(upload_to='chat_backgrounds/', blank=True, null=True)
 
     def has_both_permissions(self):
         return self.permission_user1 and self.permission_user2

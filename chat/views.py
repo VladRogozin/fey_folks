@@ -36,7 +36,7 @@ def room(request, username):
     # Получаем последние сообщения из чата
     messages = Message.objects.filter(chat=chat).order_by('-timestamp')# Здесь ограничиваем 10 последними сообщениями
 
-    return render(request, "chat/room.html", {"room_name": chat.chat_name, "messages": messages})
+    return render(request, "chat/room.html", {"room_name": chat.chat_name, "messages": messages, "chat": chat})
 
 
 @login_required
@@ -47,6 +47,32 @@ def delete_chat(request, room_name):
         return JsonResponse({'success': True})
     else:
         return JsonResponse({'success': False})
+
+
+@login_required
+def delete_message(request, message_id):
+    message = get_object_or_404(Message, id=message_id)
+
+    message.delete()
+    return JsonResponse({'success': 'Сообщение успешно удалено'})
+
+
+
+@login_required
+def toggle_permission(request, chat_name):
+    chat = get_object_or_404(Chat, chat_name=chat_name)
+
+    if request.user == chat.user1:
+        chat.permission_user1 = not chat.permission_user1
+        chat.save()
+        return JsonResponse({'success': True, 'newPermission': chat.permission_user1})
+    elif request.user == chat.user2:
+        chat.permission_user2 = not chat.permission_user2
+        chat.save()
+        return JsonResponse({'success': True, 'newPermission': chat.permission_user2})
+    else:
+        return JsonResponse({'success': False})
+
 
 
 @login_required
@@ -121,3 +147,34 @@ def give_permission(request, chat_id):
 
     # Перенаправляем пользователя на страницу с чатами или куда вам нужно
     return redirect('front:front')
+
+
+@login_required
+def upload_chat_background(request, chat_name):
+    chat = get_object_or_404(Chat, chat_name=chat_name)
+
+    # Проверяем, что текущий пользователь является user1 или user2 чата
+    if request.user == chat.user1:
+        background_field = 'background_image_1'
+    elif request.user == chat.user2:
+        background_field = 'background_image_2'
+    else:
+        return JsonResponse({'error': 'У вас нет разрешения на изменение фона чата'})
+
+    if request.method == 'POST' and request.FILES.get('background_image'):
+        background_image = request.FILES['background_image']
+
+        # Удаляем старое изображение перед сохранением нового
+        if getattr(chat, background_field):
+            old_background = getattr(chat, background_field)
+            old_background.delete()
+
+        # Сохраняем новое изображение в соответствующее поле
+        setattr(chat, background_field, background_image)
+        chat.save()
+
+        return JsonResponse({'success': 'Изображение фона чата успешно сохранено'})
+
+    return JsonResponse({'error': 'Произошла ошибка при загрузке изображения'})
+
+

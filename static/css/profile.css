@@ -21,3 +21,15 @@
   font-size: 2rem;
   margin-bottom: 20px;
 }
+
+.chat {
+  position: relative;
+  min-height: 100vh; /* Это позволяет контейнеру занимать 100% высоты экрана */
+  overflow: hidden;
+  background-size: cover;
+}
+
+#container-profile-css {
+    background-color: #202930;
+    background-image: linear-gradient(rgba(32, 41, 48, 0.5), rgba(255, 227, 79, 0.5));
+}
